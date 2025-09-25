@@ -1,47 +1,48 @@
+// src/components/Header/Header.jsx
+import React from 'react';
+import {
+  StyledHeader,
+  HeaderBlock,
+  HeaderLogo,
+  HeaderNav,
+  ButtonMainNew,
+  HeaderUser,
+} from './Header.styled';
 
-import { useState } from 'react';
-
-export default function Header() {
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-
-  const toggleUserMenu = (e) => {
-    e.preventDefault();
-    setIsUserMenuOpen(!isUserMenuOpen);
-  };
-
+export default function Header({ onOpenPopNewCard, onOpenPopExit }) {
   return (
-    <header className="header">
+    <StyledHeader>
       <div className="container">
-        <div className="header__block">
-          <div className="header__logo _show _light">
-            <a href="" target="_self"><img src="/images/logo.png" alt="logo" /></a>
-          </div>
-          <div className="header__logo _dark">
-            <a href="" target="_self"><img src="/images/logo_dark.png" alt="logo" /></a>
-          </div>
-          <nav className="header__nav">
-            <button className="header__btn-main-new _hover01" id="btnMainNew"><a href="#popNewCard">Создать новую задачу</a></button>
-            {/* Изменено: добавлен onClick и обработчик */}
-            <a href="#user-set-target" className="header__user _hover02" onClick={toggleUserMenu}>
-              Ivan Ivanov
-            </a>
-            {/* Изменено: добавлен style для display */}
-            <div
-              className="header__pop-user-set pop-user-set"
-              id="user-set-target"
-              style={{ display: isUserMenuOpen ? 'block' : 'none' }}
+        <HeaderBlock>
+          <HeaderLogo className="show light">
+            <a href="/"><img src="/images/logo.png" alt="logo" /></a>
+          </HeaderLogo>
+          <HeaderLogo className="dark">
+            <a href="/"><img src="/images/logo_dark.png" alt="logo" /></a>
+          </HeaderLogo>
+
+          <HeaderNav>
+            <ButtonMainNew
+              type="button"
+              onClick={() => {
+                onOpenPopNewCard && onOpenPopNewCard();
+              }}
             >
-              <p className="pop-user-set__name">Ivan Ivanov</p>
-              <p className="pop-user-set__mail">ivan.ivanov@gmail.com</p>
-              <div className="pop-user-set__theme">
-                <p>Темная тема</p>
-                <input type="checkbox" className="checkbox" name="checkbox" />
-              </div>
-              <button type="button" className="_hover03"><a href="#popExit">Выйти</a></button>
-            </div>
-          </nav>
-        </div>
+              Создать новую задачу
+            </ButtonMainNew>
+
+            <HeaderUser
+              as="button"
+              type="button"
+              onClick={() => {
+                onOpenPopExit && onOpenPopExit();
+              }}
+            >
+              Ivan Ivanov
+            </HeaderUser>
+          </HeaderNav>
+        </HeaderBlock>
       </div>
-    </header>
+    </StyledHeader>
   );
 }

@@ -1,92 +1,78 @@
-
-import './App.css';
-
-import { useState, useEffect } from 'react';
-import { initialCards } from './data';
-import ExitPopup from './components/ExitPopup/ExitPopup';
-import PopNewCard from './components/PopNewCard/PopNewCard';
-import PopBrowse from './components/PopBrowse/PopBrowse';
+import React, { useState } from 'react';
 import Header from './components/Header/Header';
 import Main from './components/Main/Main';
-import Column from './components/Column/Column';
-import Card from './components/Card/Card';
+import PopNewCard from './components/PopNewCard/PopNewCard';
+import PopBrowse from './components/PopBrowse/PopBrowse'; // если есть
+import ExitPopup from './components/ExitPopup/ExitPopup'; // если есть
+import './main.scss';
 
-function App() {
+export default function App() {
+  const [isPopExitOpen, setIsPopExitOpen] = useState(false);
+  const [isPopNewCardOpen, setIsPopNewCardOpen] = useState(false);
+  const [isPopBrowseOpen, setIsPopBrowseOpen] = useState(false);
 
-  const [cards, setCards] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // ===== Управление попапами =====
+  const openPopExit = () => setIsPopExitOpen(true);
+  const closePopExit = () => setIsPopExitOpen(false);
 
+  const openPopNewCard = () => setIsPopNewCardOpen(true);
+  const closePopNewCard = () => setIsPopNewCardOpen(false);
 
-  const columnTitles = ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'];
+  const openPopBrowse = () => setIsPopBrowseOpen(true);
+  const closePopBrowse = () => setIsPopBrowseOpen(false);
 
-  useEffect(() => {
-
-    const timer = setTimeout(() => {
-      console.log("Имитация загрузки завершена. Устанавливаем данные.");
-
-      setCards(initialCards);
-      setIsLoading(false);
-
-    }, 1000);
-
-
-    return () => {
-      console.log("Очистка таймера.");
-      clearTimeout(timer);
-    };
-  }, []);
+  // ===== Данные для всех колонок =====
+  // Колонки и задачи сделаны так, чтобы соответствовать макету
+  const columnsData = [
+    {
+      title: 'Без статуса',
+      tasks: [
+        { category: 'Web Design', title: 'Название задачи 1', date: '30.10.23' },
+        { category: 'Research', title: 'Название задачи 2', date: '30.10.23' },
+        { category: 'Copywriting', title: 'Название задачи 3', date: '30.10.23' },
+      ],
+    },
+    {
+      title: 'Нужно сделать',
+      tasks: [
+        { category: 'Research', title: 'Название задачи 4', date: '30.10.23' },
+        { category: 'Web Design', title: 'Название задачи 5', date: '30.10.23' },
+      ],
+    },
+    {
+      title: 'В работе',
+      tasks: [
+        { category: 'Copywriting', title: 'Название задачи 6', date: '30.10.23' },
+        { category: 'Research', title: 'Название задачи 7', date: '30.10.23' },
+      ],
+    },
+    {
+      title: 'Тестирование',
+      tasks: [
+        { category: 'Web Design', title: 'Название задачи 8', date: '30.10.23' },
+        { category: 'Research', title: 'Название задачи 9', date: '30.10.23' },
+      ],
+    },
+    {
+      title: 'Готово',
+      tasks: [
+        { category: 'Copywriting', title: 'Название задачи 10', date: '30.10.23' },
+        { category: 'Web Design', title: 'Название задачи 11', date: '30.10.23' },
+      ],
+    },
+  ];
 
   return (
     <div className="wrapper">
-      {/* Popups */}
-      <ExitPopup />
-      <PopNewCard />
-      <PopBrowse />
+      <Header onOpenPopNewCard={openPopNewCard} onOpenPopExit={openPopExit} />
 
-      {/* Основной контент */}
-      <Header />
-      <Main>
-        {/* --- Логика отображения с тернарным оператором --- */}
-        {isLoading ? (
+      {/* Основной контент с нужным числом колонок */}
+      <Main columns={columnsData} onOpenPopBrowse={openPopBrowse} />
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%',
-            fontSize: '24px',
-            color: '#666'
-          }}>
-            Данные загружаются...
-          </div>
-
-        ) : (
-
-          <>
-            {columnTitles.map((title) => {
-
-              const columnCards = cards.filter(card => card.status === title);
-              console.log(`Отрисовка колонки "${title}" с ${columnCards.length} карточками.`);
-              return (
-                <Column key={title} title={title}>
-                  {columnCards.map((card) => (
-                    <Card
-                      key={card.id}
-                      category={card.topic}
-                      title={card.title}
-                      date={card.date}
-                    />
-                  ))}
-                </Column>
-              );
-            })}
-          </>
-
-        )}
-        {/* ---------------------------------------------------- */}
-      </Main>
+      {/* Попапы */}
+      {isPopNewCardOpen && <PopNewCard onClose={closePopNewCard} />}
+      {isPopBrowseOpen && <PopBrowse onClose={closePopBrowse} />}
+      {isPopExitOpen && <ExitPopup onClose={closePopExit} />}
     </div>
   );
 }
-
-export default App;
