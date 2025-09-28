@@ -1,31 +1,28 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-
-const Wrap = styled.div`padding:24px;`;
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Header from "../components/Header/Header";
+import PopNewCard from "../components/PopNewCard/PopNewCard";
+import "../main.scss";
 
 export default function AddCardPage() {
   const navigate = useNavigate();
 
-  const handleAdd = (e) => {
-    e.preventDefault();
-    // логика добавления (пока заглушка)
-    alert('Задача добавлена (заглушка)');
-    navigate('/');
+  const handleClose = () => {
+    navigate("/"); // при закрытии возвращаемся на главную
+  };
+
+  const handleCreate = (newTask) => {
+    console.log("Создана задача:", newTask);
+    // тут можно добавить сохранение в API / state
+    navigate("/");
   };
 
   return (
-    <Wrap>
-      <h2>Добавить задачу</h2>
-      <form onSubmit={handleAdd}>
-        <div style={{marginBottom:12}}>
-          <input placeholder="Название" required />
-        </div>
-        <div style={{marginBottom:12}}>
-          <input placeholder="Категория" />
-        </div>
-        <button type="submit">Добавить</button>
-      </form>
-    </Wrap>
+    <div className="wrapper">
+      <Header />
+      <main className="main">
+        <PopNewCard onClose={handleClose} onCreate={handleCreate} />
+      </main>
+    </div>
   );
 }

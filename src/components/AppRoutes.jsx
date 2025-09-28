@@ -1,21 +1,25 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "../pages/LoginPage";
-import RegisterPage from "../pages/RegisterPage";
-import MainPage from "../pages/MainPage";
-import CardPage from "../pages/CardPage";
-import AddCardPage from "../pages/AddCardPage";
-import ExitPage from "../pages/ExitPage";
-import NotFoundPage from "../pages/NotFoundPage";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// страницы
+import MainPage from "./pages/MainPage";
+import CardPage from "./pages/CardPage";
+import AddCardPage from "./pages/AddCardPage";
+import ExitPage from "./pages/ExitPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import NotFoundPage from "./pages/NotFoundPage";
+
+import "./main.scss";
 
 export default function AppRoutes() {
   return (
     <Routes>
+      {/* --- публичные --- */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* защищённые маршруты */}
+      {/* --- защищённые --- */}
       <Route
         path="/"
         element={
@@ -49,7 +53,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/* 404 */}
+      {/* --- 404 --- */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
