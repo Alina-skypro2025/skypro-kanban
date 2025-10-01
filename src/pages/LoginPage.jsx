@@ -1,4 +1,3 @@
-// src/pages/LoginPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
@@ -49,7 +48,7 @@ const Submit = styled.button`
 `;
 
 export default function LoginPage() {
-  const { isAuth, login } = useAuth();
+  const { isAuth, login, error } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,10 +57,9 @@ export default function LoginPage() {
     if (isAuth) navigate("/");
   }, [isAuth, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(email);
-    navigate("/");
+    await login(email, password);
   };
 
   return (
@@ -71,14 +69,23 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <Field>
             <label>Почта</label>
-            <Input type="email" value={email}
-              onChange={(e) => setEmail(e.target.value)} required />
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </Field>
           <Field>
             <label>Пароль</label>
-            <Input type="password" value={password}
-              onChange={(e) => setPassword(e.target.value)} required />
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </Field>
+          {error && <p style={{ color: "red", marginBottom: 12 }}>{error}</p>}
           <Submit type="submit">Войти</Submit>
         </form>
         <p style={{marginTop:12,textAlign:"center"}}>

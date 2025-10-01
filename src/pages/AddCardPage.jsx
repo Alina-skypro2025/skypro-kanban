@@ -13,7 +13,7 @@ export default function AddCardPage() {
 
   const handleCreate = (newTask) => {
     console.log("Создана задача:", newTask);
-    // тут можно добавить сохранение в API / state
+    
     navigate("/");
   };
 

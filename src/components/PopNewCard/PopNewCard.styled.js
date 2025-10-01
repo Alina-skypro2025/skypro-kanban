@@ -1,10 +1,9 @@
-// src/components/PopNewCard/PopNewCard.styled.js
 import styled from "styled-components";
 
 export const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4); /* затемнение фона */
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,7 +14,7 @@ export const Modal = styled.div`
   background: #fff;
   border-radius: 20px;
   padding: 40px 32px;
-  width: 640px;              /* чуть уже чем раньше */
+  width: 640px;
   max-width: 95%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   display: flex;
@@ -87,14 +86,14 @@ export const CategoryItem = styled.button`
   border: none;
   cursor: pointer;
   background: ${({ color }) => color || "#eee"};
-  opacity: ${({ active }) => (active ? 1 : 0.4)};
+  opacity: ${({ $active }) => ($active ? 1 : 0.4)};
   transition: all 0.2s;
   &:hover {
     opacity: 0.8;
   }
 `;
 
-/* Цветовые пресеты под макет */
+/* Цвета категорий */
 export const colors = {
   web: "#FFB84D",
   research: "#66CC99",
