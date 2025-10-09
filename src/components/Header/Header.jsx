@@ -1,31 +1,77 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import {
+  StyledHeader,
+  HeaderBlock,
+  HeaderLogo,
+  HeaderNav,
+  ButtonMainNew,
+  HeaderUser,
+  UserMenu,
+  UserMenuHeader,
+  UserMenuRow,
+  UserMenuButton,
+} from "./Header.styled";
+
 export default function Header() {
-    return (
-        <header className="header">
-            <div className="container">
-                <div className="header__block">
-                    <div className="header__logo _show _light">
-                        <a href="" target="_self"><img src="/images/logo.png" alt="logo" /></a>
-                    </div>
-                    <div className="header__logo _dark">
-                        <a href="" target="_self"><img src="/images/logo_dark.png" alt="logo" /></a>
-                    </div>
-                    <nav className="header__nav">
-                        <button className="header__btn-main-new _hover01" id="btnMainNew">
-                            <a href="#popNewCard">Создать новую задачу</a>
-                        </button>
-                        <a href="#user-set-target" className="header__user _hover02">Ivan Ivanov</a>
-                        <div className="header__pop-user-set pop-user-set" id="user-set-target">
-                            <p className="pop-user-set__name">Ivan Ivanov</p>
-                            <p className="pop-user-set__mail">ivan.ivanov@gmail.com</p>
-                            <div className="pop-user-set__theme">
-                                <p>Темная тема</p>
-                                <input type="checkbox" className="checkbox" name="checkbox" />
-                            </div>
-                            <button type="button" className="_hover03"><a href="#popExit">Выйти</a></button>
-                        </div>
-                    </nav>
-                </div>
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const name = user?.name || "Ivan Ivanov";
+  const email = user?.email || "ivan.ivanov@example.com";
+
+  const handleOpenMenu = () => setMenuOpen((s) => !s);
+  const handleCloseMenu = () => setMenuOpen(false);
+
+  return (
+    <StyledHeader>
+      <div className="container">
+        <HeaderBlock>
+          <HeaderLogo>
+            <a href="/">
+              <img src="/images/logo.png" alt="logo" />
+            </a>
+          </HeaderLogo>
+
+          <HeaderNav>
+            {/*  Кнопка ведёт на /add */}
+            <ButtonMainNew onClick={() => navigate("/add")}>
+              Создать новую задачу
+            </ButtonMainNew>
+
+            <div style={{ position: "relative" }}>
+              <HeaderUser onClick={handleOpenMenu} aria-expanded={menuOpen}>
+                {name}
+              </HeaderUser>
+
+              {menuOpen && (
+                <UserMenu onMouseLeave={handleCloseMenu}>
+                  <UserMenuHeader>
+                    <div className="name">{name}</div>
+                    <div className="email">{email}</div>
+                  </UserMenuHeader>
+
+                  <UserMenuRow>
+                    <label style={{ fontSize: 13, color: "#222" }}>
+                      <input type="checkbox" style={{ marginRight: 8 }} />
+                      Тёмная тема
+                    </label>
+                  </UserMenuRow>
+
+                  <div style={{ marginTop: 8 }}>
+                    {/*  Кнопка ведёт на /exit */}
+                    <UserMenuButton onClick={() => navigate("/exit")}>
+                      Выйти
+                    </UserMenuButton>
+                  </div>
+                </UserMenu>
+              )}
             </div>
-        </header>
-    );
+          </HeaderNav>
+        </HeaderBlock>
+      </div>
+    </StyledHeader>
+  );
 }

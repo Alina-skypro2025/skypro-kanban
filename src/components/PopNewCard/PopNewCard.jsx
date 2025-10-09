@@ -1,58 +1,105 @@
+// src/components/PopNewCard/PopNewCard.jsx
+import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import {
+  Overlay,
+  Modal,
+  LeftSide,
+  Title,
+  Label,
+  Input,
+  Textarea,
+  CategoryList,
+  CategoryItem,
+  colors,
+  CalendarWrap,
+  CreateBtn,
+  CloseBtn,
+} from './PopNewCard.styled';
 
-import Calendar from '../Calendar/Calendar';
+export default function PopNewCard({ onClose, onCreate }) {
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
+  const [date, setDate] = useState(null);
+  const [category, setCategory] = useState('');
 
-export default function PopNewCard() {
-    return (
-        <div className="pop-new-card" id="popNewCard">
-            <div className="pop-new-card__container">
-                <div className="pop-new-card__block">
-                    <div className="pop-new-card__content">
-                        <h3 className="pop-new-card__ttl">Создание задачи</h3>
-                        <a href="#" className="pop-new-card__close">&#10006;</a>
-                        <div className="pop-new-card__wrap">
-                            <form className="pop-new-card__form form-new" id="formNewCard" action="#">
-                                <div className="form-new__block">
-                                    <label htmlFor="formTitle" className="subttl">Название задачи</label>
-                                    <input
-                                        className="form-new__input"
-                                        type="text"
-                                        name="name"
-                                        id="formTitle"
-                                        placeholder="Введите название задачи..."
-                                        autoFocus
-                                    />
-                                </div>
-                                <div className="form-new__block">
-                                    <label htmlFor="textArea" className="subttl">Описание задачи</label>
-                                    <textarea
-                                        className="form-new__area"
-                                        name="text"
-                                        id="textArea"
-                                        placeholder="Введите описание задачи..."
-                                    ></textarea>
-                                </div>
-                            </form>
-                            {/* Используем компонент Calendar */}
-                            <Calendar />
-                        </div>
-                        <div className="pop-new-card__categories categories">
-                            <p className="categories__p subttl">Категория</p>
-                            <div className="categories__themes">
-                                <div className="categories__theme _orange _active-category">
-                                    <p className="_orange">Web Design</p>
-                                </div>
-                                <div className="categories__theme _green">
-                                    <p className="_green">Research</p>
-                                </div>
-                                <div className="categories__theme _purple">
-                                    <p className="_purple">Copywriting</p>
-                                </div>
-                            </div>
-                        </div>
-                        <button className="form-new__create _hover01" id="btnCreate">Создать задачу</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+  const categories = [
+    { name: 'Web Design', color: colors.web },
+    { name: 'Research', color: colors.research },
+    { name: 'Copywriting', color: colors.copy },
+  ];
+
+  const handleCreate = () => {
+    if (!title.trim() || !date || !category) return;
+    const payload = {
+      title,
+      description: desc,
+      deadline: date,
+      category,
+    };
+    if (typeof onCreate === 'function') onCreate(payload);
+    if (typeof onClose === 'function') onClose();
+  };
+
+  return (
+    <Overlay>
+      <Modal>
+        <CloseBtn onClick={onClose}>×</CloseBtn>
+
+        <LeftSide>
+          <Title>Создание задачи</Title>
+
+          <div>
+            <Label>Название задачи</Label>
+            <Input
+              placeholder="Введите название задачи…"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label>Описание задачи</Label>
+            <Textarea
+              placeholder="Введите описание задачи…"
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label>Категория</Label>
+            <CategoryList>
+              {categories.map((c) => (
+                <CategoryItem
+                  key={c.name}
+                  color={c.color}
+                  active={category === c.name}
+                  type="button"
+                  onClick={() => setCategory(c.name)}
+                >
+                  {c.name}
+                </CategoryItem>
+              ))}
+            </CategoryList>
+          </div>
+
+          <CreateBtn onClick={handleCreate}>Создать задачу</CreateBtn>
+        </LeftSide>
+
+        <CalendarWrap>
+          <Label>Даты</Label>
+          <DatePicker
+            selected={date}
+            onChange={(d) => setDate(d)}
+            inline
+          />
+          <p style={{ marginTop: 8, color: '#888', fontSize: 14 }}>
+            Выберите срок исполнения
+          </p>
+        </CalendarWrap>
+      </Modal>
+    </Overlay>
+  );
 }
