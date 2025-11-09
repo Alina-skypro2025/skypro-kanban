@@ -1,7 +1,7 @@
 // src/components/PopNewCard/PopNewCard.jsx
-import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Overlay,
   Modal,
@@ -16,30 +16,39 @@ import {
   CalendarWrap,
   CreateBtn,
   CloseBtn,
-} from './PopNewCard.styled';
+} from "./PopNewCard.styled";
 
 export default function PopNewCard({ onClose, onCreate }) {
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
   const [date, setDate] = useState(null);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState("");
 
   const categories = [
-    { name: 'Web Design', color: colors.web },
-    { name: 'Research', color: colors.research },
-    { name: 'Copywriting', color: colors.copy },
+    { name: "Web Design", color: colors.web },
+    { name: "Research", color: colors.research },
+    { name: "Copywriting", color: colors.copy },
   ];
 
-  const handleCreate = () => {
-    if (!title.trim() || !date || !category) return;
+  const handleCreate = async () => {
+    if (!title.trim() || !date || !category) {
+      alert("Заполните название, дату и категорию");
+      return;
+    }
     const payload = {
-      title,
-      description: desc,
-      deadline: date,
-      category,
+      title: title.trim(),
+      description: desc || "",
+      topic: category, // <— важно: поле называется topic
+      status: "Без статуса",
+      date, // передаём Date, сервис переведёт в ISO
     };
-    if (typeof onCreate === 'function') onCreate(payload);
-    if (typeof onClose === 'function') onClose();
+
+    try {
+      await onCreate?.(payload);
+      onClose?.();
+    } catch (e) {
+      alert(e.message || "Не удалось создать задачу. Попробуйте позже.");
+    }
   };
 
   return (
@@ -75,7 +84,7 @@ export default function PopNewCard({ onClose, onCreate }) {
                 <CategoryItem
                   key={c.name}
                   color={c.color}
-                  active={category === c.name}
+                  $active={category === c.name} // <— используем $active, чтобы не попадало в DOM
                   type="button"
                   onClick={() => setCategory(c.name)}
                 >
@@ -90,12 +99,8 @@ export default function PopNewCard({ onClose, onCreate }) {
 
         <CalendarWrap>
           <Label>Даты</Label>
-          <DatePicker
-            selected={date}
-            onChange={(d) => setDate(d)}
-            inline
-          />
-          <p style={{ marginTop: 8, color: '#888', fontSize: 14 }}>
+          <DatePicker selected={date} onChange={(d) => setDate(d)} inline />
+          <p style={{ marginTop: 8, color: "#888", fontSize: 14 }}>
             Выберите срок исполнения
           </p>
         </CalendarWrap>

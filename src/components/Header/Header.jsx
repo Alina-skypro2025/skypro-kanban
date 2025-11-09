@@ -1,6 +1,5 @@
+// src/components/Header/Header.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import {
   StyledHeader,
   HeaderBlock,
@@ -14,13 +13,11 @@ import {
   UserMenuButton,
 } from "./Header.styled";
 
-export default function Header() {
+export default function Header({ onCreate, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
-  const name = user?.name || "Ivan Ivanov";
-  const email = user?.email || "ivan.ivanov@example.com";
+  const userName = localStorage.getItem("userName") || "Алина";
+  const userEmail = localStorage.getItem("userEmail") || "alina@example.com";
 
   const handleOpenMenu = () => setMenuOpen((s) => !s);
   const handleCloseMenu = () => setMenuOpen(false);
@@ -30,27 +27,25 @@ export default function Header() {
       <div className="container">
         <HeaderBlock>
           <HeaderLogo>
-            <a href="/">
-              <img src="/images/logo.png" alt="logo" />
-            </a>
+            <img src="/images/logo.png" alt="logo" />
           </HeaderLogo>
 
           <HeaderNav>
-            {/*  Кнопка ведёт на /add */}
-            <ButtonMainNew onClick={() => navigate("/add")}>
+            {/* ✅ Кнопка теперь открывает модалку */}
+            <ButtonMainNew onClick={onCreate}>
               Создать новую задачу
             </ButtonMainNew>
 
             <div style={{ position: "relative" }}>
               <HeaderUser onClick={handleOpenMenu} aria-expanded={menuOpen}>
-                {name}
+                {userName}
               </HeaderUser>
 
               {menuOpen && (
                 <UserMenu onMouseLeave={handleCloseMenu}>
                   <UserMenuHeader>
-                    <div className="name">{name}</div>
-                    <div className="email">{email}</div>
+                    <div className="name">{userName}</div>
+                    <div className="email">{userEmail}</div>
                   </UserMenuHeader>
 
                   <UserMenuRow>
@@ -61,8 +56,8 @@ export default function Header() {
                   </UserMenuRow>
 
                   <div style={{ marginTop: 8 }}>
-                    {/*  Кнопка ведёт на /exit */}
-                    <UserMenuButton onClick={() => navigate("/exit")}>
+                    {/* ✅ Теперь logout из контекста */}
+                    <UserMenuButton onClick={onLogout}>
                       Выйти
                     </UserMenuButton>
                   </div>
