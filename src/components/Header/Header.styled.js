@@ -4,9 +4,12 @@ import styled from "styled-components";
 export const StyledHeader = styled.header`
   background: #ffffff;
   border-bottom: 1px solid rgba(16, 24, 40, 0.04);
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.03);
   padding: 18px 0;
   z-index: 20;
+  position: relative;
 `;
+
 
 export const HeaderBlock = styled.div`
   display: flex;

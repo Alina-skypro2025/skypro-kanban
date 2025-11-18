@@ -1,65 +1,31 @@
+// src/App.jsx
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-
+import { Routes, Route, Navigate } from "react-router-dom";
+import Main from "./components/Main/Main";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
-import MainPage from "./pages/MainPage.jsx";
-import CardPage from "./pages/CardPage.jsx";
-import AddCardPage from "./pages/AddCardPage.jsx";
-import ExitPage from "./pages/ExitPage.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { useAuth } from "./context/AuthContext";
 
-import { AuthProvider } from "./context/AuthContext.jsx";
-import { TaskProvider } from "./context/TaskContext.jsx";
+export default function App() {
+  const { isAuth, logout } = useAuth();
 
-export default function AppRoutes() {
   return (
-    <AuthProvider>
-      <TaskProvider>
-        <Routes>
-          {/* публичные */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-
-          {/* защищённые */}
+    <Routes>
+      {isAuth ? (
+        <>
           <Route
             path="/"
-            element={
-              <ProtectedRoute>
-                <MainPage />
-              </ProtectedRoute>
-            }
+            element={<Main token={localStorage.getItem("token")} onLogout={logout} />}
           />
-          <Route
-            path="/card/:id"
-            element={
-              <ProtectedRoute>
-                <CardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add"
-            element={
-              <ProtectedRoute>
-                <AddCardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/exit"
-            element={
-              <ProtectedRoute>
-                <ExitPage />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* 404 */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </TaskProvider>
-    </AuthProvider>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </>
+      ) : (
+        <>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </>
+      )}
+    </Routes>
   );
 }

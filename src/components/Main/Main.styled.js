@@ -1,16 +1,22 @@
-// src/components/Main/Main.styled.js
-import styled from 'styled-components';
-import { theme } from '../../theme';
+import styled from "styled-components";
 
 export const MainWrapper = styled.main`
-  background: ${theme.colors.pageBackground};
-  padding: 40px 0;
-  min-height: calc(100vh - 72px);
+  width: 100%;
+  min-height: 100vh;
+  background-color: #eaEEF6;
+  padding: 0 0 49px; 
+  box-sizing: border-box;
 `;
 
 export const Content = styled.div`
   display: flex;
-  gap: 40px;
   align-items: flex-start;
-  /* wrapper for columns; columns themselves стилизованы в Column.styled.js */
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: nowrap;
+
+  @media (max-width: 1200px) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 `;
