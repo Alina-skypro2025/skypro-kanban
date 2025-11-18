@@ -1,4 +1,4 @@
-// src/components/Header/Header.styled.js
+
 import styled from "styled-components";
 
 export const StyledHeader = styled.header`
@@ -90,7 +90,7 @@ export const UserMenuButton = styled.button`
   &:hover { background:#f6f7fb; }
 `;
 
-/* Модальное подтверждение (выход) */
+
 export const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;

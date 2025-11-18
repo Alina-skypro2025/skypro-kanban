@@ -1,4 +1,4 @@
-// src/context/TaskContext.jsx
+
 import React, { createContext, useContext, useCallback, useMemo, useState } from "react";
 import {
   getTasks as apiGetTasks,
@@ -11,11 +11,11 @@ import {
 const TaskContext = createContext(null);
 
 export const TaskProvider = ({ children }) => {
-  const [tasks, setTasks] = useState([]);         // массив задач
-  const [loading, setLoading] = useState(false);  // индикатор загрузки
-  const [error, setError] = useState(null);       // текст ошибки (для UI)
+  const [tasks, setTasks] = useState([]);         
+  const [loading, setLoading] = useState(false);  
+  const [error, setError] = useState(null);       
 
-  // нормализуем задачи из API (меняем _id -> id)
+  
   const normalize = (list = []) =>
     list.map((t) => ({
       ...t,
@@ -56,7 +56,7 @@ export const TaskProvider = ({ children }) => {
     setError(null);
     try {
       const data = await apiCreateTask(payload, token);
-      setTasks(normalize(data.tasks || [])); // API возвращает обновлённый список
+      setTasks(normalize(data.tasks || [])); 
       return true;
     } catch (e) {
       console.error(e);

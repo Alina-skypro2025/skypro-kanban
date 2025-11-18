@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Header from "../components/Header/Header";
 import Main from "../components/Main/Main";
 import { useTasks } from "../context/TaskContext";
-import "../main.scss";
+import "../App.css";
 
 export default function MainPage() {
   const { tasks, loading, error, loadTasks } = useTasks();

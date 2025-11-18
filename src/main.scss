@@ -27,13 +27,7 @@ ul li {
 
 
 
-//-------------------------------//
 
-// ========== fonts ========
-
-//--------------------------
-
-// ========== анимация ========
 @keyframes card-animation {
 	0% {
 		height: 0;
@@ -46,7 +40,7 @@ ul li {
 	}
 }
 
-//--------------------------
+
 
 html,
 body {
@@ -73,7 +67,7 @@ body {
     padding: 0 30px;
 }
 
-// ========== hover ========
+
 
 ._hover01:hover {
 	background-color: #33399b;
@@ -94,7 +88,7 @@ body {
 		color: #FFFFFF;
 	}
 }
-// ========== activ ========
+
 .pop-user-set:target,
 .pop-exit:target,
 .pop-new-card:target,
@@ -102,7 +96,7 @@ body {
 	display: block;
 }
 
-// ========== color ========
+
 ._orange {
 	background-color: #FFE4C2;
 	color: #FF6D00;
@@ -123,7 +117,7 @@ body {
 	opacity: 1 !important;
 }
 
-// =================== pop-up ====================//
+
 .pop-wrap{
 	position: relative;
 		top: 0;
@@ -309,7 +303,7 @@ body {
 	}
 }
 
-//--------------- New Card ------------------//
+
 .pop-new-card {
 	display: none;
 	width: 100%;
@@ -445,7 +439,7 @@ body {
 	font-weight: 600;
 	line-height: 1;
 }
-//=== Календарь
+
 .calendar {
 	width: 182px;
 	margin-bottom: 20px;
@@ -554,7 +548,7 @@ body {
 		}
 	}	
 }
-//--------------
+
 
 ._other-month {
 	opacity: 0;
@@ -570,7 +564,7 @@ body {
 ._current {
 	font-weight: 700;
 }
-//--------------
+
 .categories {
 	margin-bottom: 20px;
 
@@ -603,9 +597,7 @@ body {
 
 	}
 }
-//-------------------------------------
 
-//-------------------------------------//
 .pop-browse {
 	display: none;
 	width: 100%;
@@ -791,9 +783,7 @@ body {
 }
 
 
-//-------------------------------------//
 
-// =================== header ====================//
 
 ._hide {
 	display: none;
@@ -892,7 +882,7 @@ body {
 }
 
 
-// =================== main ====================//
+
 
 .main {
 	width: 100%;
@@ -933,7 +923,7 @@ body {
 	}
 }
 
-// ================== Карточки ====================================
+
 
 
 .cards {
@@ -1040,7 +1030,7 @@ body {
 }
 
 
-// ================== Медиа ====================================
+
 
 @media screen and (max-width: 1200px) {
 	.main {
@@ -1085,7 +1075,7 @@ body {
 
 @media screen and (max-width:660px) {
 
-	//--------------- New Card ------------------//
+	
 	.pop-new-card {
 		top: 70px;
 
@@ -1105,7 +1095,7 @@ body {
 
 	}
 
-	//=== Календарь
+	
 	.calendar {
 		max-width: 340px;
 		width: 100%;
@@ -1140,7 +1130,7 @@ body {
 		}
 	}
 
-	//--------------
+	
 
 	.pop-browse {
 		top: 70px;
@@ -1278,9 +1268,7 @@ body {
 }
 
 @media only screen and (max-width: 375px) {
-	// .container {
-	// 		min-width: 375px;
-	// 	}
+	
 
 	.pop-exit {
 
@@ -1315,7 +1303,7 @@ body {
   &__title   { margin-bottom: 20px; font-size: 24px; font-weight: 600; }
   &__buttons { display: flex; gap: 16px; }
 }
-// ========= Стили для страницы добавления задачи =========
+
 .add-card {
   max-width: 600px;
   margin: 0 auto;
@@ -1378,8 +1366,5 @@ body {
   background: #4a50d4;
 }
 
-
-
-	
 }
 

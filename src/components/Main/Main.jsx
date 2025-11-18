@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { MainWrapper, Content } from "./Main.styled";
 import Header from "../Header/Header";
 import Column from "../Column/Column";
@@ -21,54 +21,58 @@ export default function Main({ token, onLogout }) {
     "Готово",
   ];
 
-  // ====== Загрузка задач ======
+  // === SAFE ID HELPERS ===
+  function getId(task) {
+    if (!task) return null;
+    return task._id || task.id || null;
+  }
+
+  function sameId(a, b) {
+    return getId(a) === getId(b);
+  }
+
+  // ===== Загрузка задач =====
   const loadTasks = useCallback(async () => {
     try {
-      const data = await getTasks(token);
-      setTasks(Array.isArray(data) ? data : data.tasks || []);
+      const list = await getTasks(token);
+
+      // защищаемся от undefined задач
+      const safe = list.filter((t) => t && getId(t));
+
+      setTasks(safe);
     } catch (err) {
-      console.error("Ошибка при загрузке задач:", err);
+      if (err.message === "401") return;
       setError(err.message);
-      if (err.message.includes("401")) {
-        alert("Сессия истекла, войдите снова");
-        onLogout();
-      }
     }
-  }, [token, onLogout]);
+  }, [token]);
 
   useEffect(() => {
-    if (token) loadTasks();
-  }, [token, loadTasks]);
+    loadTasks();
+  }, [loadTasks]);
 
-  // ====== Создание ======
+  // ===== Создание =====
   async function handleTaskCreated(newTaskData) {
-    try {
-      await createTask(token, newTaskData);
-      setIsCreateModalOpen(false);
-      setTimeout(loadTasks, 800); 
-    } catch (err) {
-      console.error("Ошибка при создании:", err);
-      alert("Ошибка при создании: " + err.message);
-    }
+    await createTask(newTaskData, token);
+    setIsCreateModalOpen(false);
+    loadTasks();
   }
 
-  // ====== Обновление ======
+  // ===== Обновление =====
   function handleTaskUpdated(updatedTask) {
     setTasks((prev) =>
-      prev.map((t) =>
-        t.id === updatedTask.id || t._id === updatedTask._id
-          ? { ...t, ...updatedTask }
-          : t
-      )
+      prev.map((t) => (sameId(t, updatedTask) ? updatedTask : t))
     );
-    
-    setTimeout(loadTasks, 1000);
+
+    setSelectedTask(null);
+    loadTasks();
   }
 
-  // ====== Удаление ======
+  // ===== Удаление =====
   function handleTaskDeleted(id) {
-    setTasks((prev) => prev.filter((t) => t.id !== id && t._id !== id));
-    setTimeout(loadTasks, 800);
+    setTasks((prev) => prev.filter((t) => getId(t) !== id));
+
+    setSelectedTask(null);
+    loadTasks();
   }
 
   return (
@@ -85,7 +89,7 @@ export default function Main({ token, onLogout }) {
                 .filter((task) => task.status === status)
                 .map((task) => (
                   <TaskCard
-                    key={task._id || task.id}
+                    key={getId(task)}
                     task={task}
                     token={token}
                     onClick={() => setSelectedTask(task)}
@@ -109,10 +113,7 @@ export default function Main({ token, onLogout }) {
         <TaskModal
           task={selectedTask}
           token={token}
-          onClose={() => {
-            setSelectedTask(null);
-            setTimeout(loadTasks, 800); 
-          }}
+          onClose={() => setSelectedTask(null)}
           onUpdate={handleTaskUpdated}
           onDelete={handleTaskDeleted}
         />

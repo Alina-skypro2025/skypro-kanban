@@ -1,9 +1,9 @@
-// src/pages/AddCardPage.jsx
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import PopNewCard from "../components/PopNewCard/PopNewCard";
 import { createTask } from "../services/tasks";
-import { useTasks } from "../context/TaskContext"; // если есть, чтобы обновить список
+import { useTasks } from "../context/TaskContext"; 
 
 export default function AddCardPage() {
   const navigate = useNavigate();
@@ -18,13 +18,13 @@ export default function AddCardPage() {
         title: payload.title,
         description: payload.description,
         topic: payload.topic,
-        status: payload.status, // "Без статуса"
-        date: payload.date, // Date
+        status: payload.status, 
+        date: payload.date, 
       },
       token
     );
 
-    // обновим список на главной (если контекст подключен)
+   
     if (typeof loadTasks === "function") {
       await loadTasks(token);
     }

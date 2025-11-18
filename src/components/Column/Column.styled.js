@@ -1,4 +1,4 @@
-// src/components/Column/Column.styled.js
+
 import styled from "styled-components";
 
 export const Col = styled.section`
@@ -24,7 +24,7 @@ export const Title = styled.p`
 
 export const List = styled.ul`
   display: flex;
-  flex-direction: column; /* карточки идут вниз */
+  flex-direction: column; 
   gap: 12px;
   list-style: none;
   padding: 0;

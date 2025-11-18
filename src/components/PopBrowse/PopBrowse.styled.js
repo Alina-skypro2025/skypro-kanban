@@ -1,4 +1,4 @@
-// src/components/PopBrowse/PopBrowse.styled.js
+
 import styled from 'styled-components';
 import { theme } from '../../theme';
 

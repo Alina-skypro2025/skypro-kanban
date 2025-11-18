@@ -1,4 +1,3 @@
-// src/components/Header/Header.jsx
 import React, { useState } from "react";
 import {
   StyledHeader,
@@ -13,11 +12,16 @@ import {
   UserMenuButton,
 } from "./Header.styled";
 
+import { useAuth } from "../../context/AuthContext";
+
 export default function Header({ onCreate, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const userName = localStorage.getItem("userName") || "Алина";
-  const userEmail = localStorage.getItem("userEmail") || "alina@example.com";
+  
+  const { user } = useAuth();
+
+  const userName = user?.name || "Пользователь";
+  const userEmail = user?.login || "email@example.com";
 
   const handleOpenMenu = () => setMenuOpen((s) => !s);
   const handleCloseMenu = () => setMenuOpen(false);
@@ -31,10 +35,7 @@ export default function Header({ onCreate, onLogout }) {
           </HeaderLogo>
 
           <HeaderNav>
-            {/* ✅ Кнопка теперь открывает модалку */}
-            <ButtonMainNew onClick={onCreate}>
-              Создать новую задачу
-            </ButtonMainNew>
+            <ButtonMainNew onClick={onCreate}>Создать новую задачу</ButtonMainNew>
 
             <div style={{ position: "relative" }}>
               <HeaderUser onClick={handleOpenMenu} aria-expanded={menuOpen}>
@@ -56,10 +57,7 @@ export default function Header({ onCreate, onLogout }) {
                   </UserMenuRow>
 
                   <div style={{ marginTop: 8 }}>
-                    {/* ✅ Теперь logout из контекста */}
-                    <UserMenuButton onClick={onLogout}>
-                      Выйти
-                    </UserMenuButton>
+                    <UserMenuButton onClick={onLogout}>Выйти</UserMenuButton>
                   </div>
                 </UserMenu>
               )}

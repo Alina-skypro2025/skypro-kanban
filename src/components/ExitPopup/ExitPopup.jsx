@@ -1,4 +1,4 @@
-// src/components/ExitPopup/ExitPopup.jsx
+
 export default function ExitPopup() {
     return (
         <div className="pop-exit" id="popExit">

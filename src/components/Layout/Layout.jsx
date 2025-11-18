@@ -1,7 +1,7 @@
 import React from "react";
-import { Outlet } from "react-router-dom";      // сюда будут подставляться страницы
+import { Outlet } from "react-router-dom";      
 import Header from "../Header/Header";
-import "../../main.scss";                       //  глобальные стили
+import "../../App.css";                       
 
 export default function Layout() {
   return (

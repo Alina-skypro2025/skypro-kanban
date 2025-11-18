@@ -1,4 +1,4 @@
-// src/components/Column/Column.jsx
+
 import React from "react";
 import { Col, TitleWrap, Title, List } from "./Column.styled";
 

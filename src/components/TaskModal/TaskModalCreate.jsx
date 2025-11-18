@@ -12,7 +12,6 @@ export default function TaskModalCreate({ onClose, onCreate }) {
     { name: "Copywriting", class: "_purple" },
   ];
 
-  // === Вспомогательные функции для календаря ===
   const monthNames = [
     "Январь",
     "Февраль",
@@ -30,39 +29,34 @@ export default function TaskModalCreate({ onClose, onCreate }) {
 
   const currentYear = selectedDate.getFullYear();
   const currentMonth = selectedDate.getMonth();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-  const daysInMonth = lastDayOfMonth.getDate();
-
-  // Смена месяца
-  const handlePrevMonth = () => {
+  const handlePrevMonth = () =>
     setSelectedDate(new Date(currentYear, currentMonth - 1, 1));
-  };
 
-  const handleNextMonth = () => {
+  const handleNextMonth = () =>
     setSelectedDate(new Date(currentYear, currentMonth + 1, 1));
-  };
 
-  // Смена дня
-  const handleSelectDay = (day) => {
-    const newDate = new Date(currentYear, currentMonth, day);
-    setSelectedDate(newDate);
-  };
+  const handleSelectDay = (day) =>
+    setSelectedDate(new Date(currentYear, currentMonth, day));
+
+  
+  const formatLocalDate = (d) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+      d.getDate()
+    ).padStart(2, "0")}`;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title.trim()) {
-      alert("Введите название задачи");
-      return;
-    }
+    if (!title.trim()) return alert("Введите название задачи");
 
     onCreate({
       title,
       description,
-      date: selectedDate.toISOString().split("T")[0],
       topic: category,
       status: "Без статуса",
+     
+      date: formatLocalDate(selectedDate),
     });
   };
 
@@ -78,11 +72,8 @@ export default function TaskModalCreate({ onClose, onCreate }) {
                 {/* Левая колонка */}
                 <div className="pop-new-card__form">
                   <div className="form-new__block">
-                    <label htmlFor="task-title" className="subttl">
-                      Название задачи
-                    </label>
+                    <label className="subttl">Название задачи</label>
                     <input
-                      id="task-title"
                       type="text"
                       className="form-new__input"
                       placeholder="Введите название задачи..."
@@ -90,17 +81,15 @@ export default function TaskModalCreate({ onClose, onCreate }) {
                       onChange={(e) => setTitle(e.target.value)}
                     />
 
-                    <label htmlFor="task-desc" className="subttl">
-                      Описание задачи
-                    </label>
+                    <label className="subttl">Описание задачи</label>
                     <textarea
-                      id="task-desc"
                       className="form-new__area"
                       placeholder="Введите описание задачи..."
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                     />
 
+                    {/* Категории */}
                     <div className="categories">
                       <p className="categories__p subttl">Категория</p>
                       <div className="categories__themes">
@@ -132,33 +121,23 @@ export default function TaskModalCreate({ onClose, onCreate }) {
                       </div>
 
                       <div className="calendar__nav">
-                        <div
-                          className="nav__action"
-                          onClick={handlePrevMonth}
-                          title="Предыдущий месяц"
-                        >
-                          <svg
-                            width="10"
-                            height="10"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path d="M12 15L7 10L12 5" stroke="#94A6BE" strokeWidth="2" />
+                        <div className="nav__action" onClick={handlePrevMonth}>
+                          <svg width="10" height="10" viewBox="0 0 20 20">
+                            <path
+                              d="M12 15L7 10L12 5"
+                              stroke="#94A6BE"
+                              strokeWidth="2"
+                            />
                           </svg>
                         </div>
 
-                        <div
-                          className="nav__action"
-                          onClick={handleNextMonth}
-                          title="Следующий месяц"
-                        >
-                          <svg
-                            width="10"
-                            height="10"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path d="M8 5L13 10L8 15" stroke="#94A6BE" strokeWidth="2" />
+                        <div className="nav__action" onClick={handleNextMonth}>
+                          <svg width="10" height="10" viewBox="0 0 20 20">
+                            <path
+                              d="M8 5L13 10L8 15"
+                              stroke="#94A6BE"
+                              strokeWidth="2"
+                            />
                           </svg>
                         </div>
                       </div>
@@ -193,7 +172,9 @@ export default function TaskModalCreate({ onClose, onCreate }) {
                       })}
                     </div>
 
-                    <div className="calendar__p">Выберите срок исполнения</div>
+                    <div className="calendar__p">
+                      Выбрано: {formatLocalDate(selectedDate)}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -203,11 +184,7 @@ export default function TaskModalCreate({ onClose, onCreate }) {
               </button>
             </form>
 
-            <div
-              className="pop-new-card__close"
-              title="Закрыть"
-              onClick={onClose}
-            >
+            <div className="pop-new-card__close" onClick={onClose}>
               ✕
             </div>
           </div>

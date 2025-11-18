@@ -10,7 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
-import "./main.scss";
+import "./App.css";
 
 export default function AppRoutes() {
   return (

@@ -1,4 +1,4 @@
-// src/components/PopNewCard/PopNewCard.jsx
+
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -38,9 +38,9 @@ export default function PopNewCard({ onClose, onCreate }) {
     const payload = {
       title: title.trim(),
       description: desc || "",
-      topic: category, // <— важно: поле называется topic
+      topic: category, 
       status: "Без статуса",
-      date, // передаём Date, сервис переведёт в ISO
+      date, 
     };
 
     try {
@@ -84,7 +84,7 @@ export default function PopNewCard({ onClose, onCreate }) {
                 <CategoryItem
                   key={c.name}
                   color={c.color}
-                  $active={category === c.name} // <— используем $active, чтобы не попадало в DOM
+                  $active={category === c.name} 
                   type="button"
                   onClick={() => setCategory(c.name)}
                 >
