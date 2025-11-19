@@ -15,7 +15,7 @@ const PopLogout = () => {
   const { logout } = useAuth();
 
   const onClose = useCallback(() => {
-    // вернуться туда, откуда пришли (доска)
+   
     navigate(-1);
   }, [navigate]);
 
@@ -24,7 +24,7 @@ const PopLogout = () => {
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
-  // Закрытие по ESC
+ 
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();

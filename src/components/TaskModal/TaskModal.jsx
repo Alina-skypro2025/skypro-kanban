@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { deleteTask, updateTask } from "../../services/tasks";
+import { updateTask, deleteTask } from "../../services/tasks";
+
 
 const Overlay = styled.div`
   position: fixed;
@@ -13,13 +14,14 @@ const Overlay = styled.div`
 `;
 
 const Modal = styled.div`
-  width: 760px;
+  width: 780px;
   max-width: 95%;
-  background: #fff;
+  background: #ffffff;
   border-radius: 10px;
   padding: 32px 36px 28px;
   box-shadow: 0 10px 39px rgba(26, 56, 101, 0.21);
   border: 0.7px solid #d4dbe5;
+  font-family: inherit;
 `;
 
 const Header = styled.div`
@@ -29,180 +31,241 @@ const Header = styled.div`
   margin-bottom: 26px;
 `;
 
-const Title = styled.h3`
+const TitleInput = styled.input`
   font-size: 20px;
   font-weight: 600;
+  border: none;
+  width: 100%;
+  outline: none;
+  padding: 2px 4px 4px;
   color: #000;
+  background: ${({ disabled }) => (disabled ? "transparent" : "#f4f6fa")};
+  border-radius: 4px;
 `;
 
 const Tag = styled.div`
-  background: ${(p) =>
-    p.$topic === "Web Design"
+  min-width: 110px;
+  text-align: center;
+  background: ${({ $topic }) =>
+    $topic === "Web Design"
       ? "#FFE4C2"
-      : p.$topic === "Research"
+      : $topic === "Research"
       ? "#B4FDD1"
-      : p.$topic === "Copywriting"
+      : $topic === "Copywriting"
       ? "#E9D4FF"
       : "#EAEEF6"};
-  color: ${(p) =>
-    p.$topic === "Web Design"
+  color: ${({ $topic }) =>
+    $topic === "Web Design"
       ? "#FF6D00"
-      : p.$topic === "Research"
+      : $topic === "Research"
       ? "#06B16E"
-      : p.$topic === "Copywriting"
+      : $topic === "Copywriting"
       ? "#9A48F1"
       : "#94A6BE"};
   font-size: 12px;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 6px 16px;
   border-radius: 24px;
 `;
 
 const Layout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 260px;
-  gap: 36px;
-  @media (max-width: 720px) {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: minmax(0, 1.1fr) 260px;
+  gap: 40px;
 `;
 
 const Label = styled.p`
   font-size: 14px;
   font-weight: 600;
   color: #000;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 `;
 
 const StatusList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 20px;
 `;
 
 const StatusButton = styled.button`
-  padding: 10px 14px;
+  padding: 9px 14px;
   border-radius: 20px;
   border: 0.7px solid rgba(148, 166, 190, 0.4);
-  background: ${(p) => (p.$active ? "#94A6BE" : "#fff")};
-  color: ${(p) => (p.$active ? "#fff" : "#000")};
-  font-size: 14px;
-  font-weight: 500;
-  cursor: ${(p) => (p.$disabled ? "default" : "pointer")};
-  pointer-events: ${(p) => (p.$disabled ? "none" : "auto")};
+  background: ${({ $active }) => ($active ? "#94A6BE" : "#ffffff")};
+  color: ${({ $active }) => ($active ? "#ffffff" : "#000000")};
+  font-size: 13px;
+  cursor: ${({ $disabled }) => ($disabled ? "default" : "pointer")};
+  pointer-events: ${({ $disabled }) => ($disabled ? "none" : "auto")};
+  transition: background 0.12s ease, color 0.12s ease;
+
   &:hover {
-    background: ${(p) => (p.$active ? "#94A6BE" : "#EAEEF6")};
+    background: ${({ $disabled }) => ($disabled ? undefined : "#e1e7f2")};
   }
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
-  height: 160px;
+  min-height: 160px;
+  resize: vertical;
   border: 0.7px solid rgba(148, 166, 190, 0.4);
   border-radius: 8px;
-  padding: 14px;
+  padding: 12px 14px;
   font-size: 14px;
-  color: #000;
-  resize: none;
-  background: ${(p) => (p.disabled ? "#f5f7fb" : "#fff")};
-  &::placeholder {
-    color: #94a6be;
+  line-height: 1.4;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(86, 94, 239, 0.12);
+    border-color: #565eef;
   }
 `;
 
+
 const CalendarWrap = styled.div``;
+
 const CalendarHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #94a6be;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
-`;
-const NavButton = styled.button`
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  border: 0.7px solid rgba(148, 166, 190, 0.4);
-  background: #fff;
-  cursor: pointer;
+  margin-bottom: 6px;
 `;
 
-const Weekdays = styled.div`
+const CalendarMonth = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+`;
+
+const CalendarNavBtn = styled.button`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: #f4f6fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a6be;
+  cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
+
+  svg {
+    width: 10px;
+    height: 10px;
+  }
+`;
+
+const WeekDaysRow = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin: 6px 0 4px;
+  margin-bottom: 4px;
 `;
+
 const Weekday = styled.div`
   text-align: center;
   font-size: 10px;
   color: #94a6be;
-  font-weight: 500;
 `;
+
 const DaysGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 `;
+
 const DayCell = styled.button`
   height: 28px;
   border-radius: 50%;
   border: none;
-  background: ${(p) => (p.$selected ? "#94A6BE" : "transparent")};
-  color: ${(p) => (p.$muted ? "#C9D3E3" : p.$selected ? "#fff" : "#000")};
+  background: ${({ $selected }) => ($selected ? "#94A6BE" : "transparent")};
+  color: ${({ $selected, $muted }) =>
+    $selected ? "#ffffff" : $muted ? "#C9D3E3" : "#000000"};
   font-size: 12px;
-  cursor: ${(p) => (p.disabled ? "default" : "pointer")};
+  cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
+
   &:hover {
-    background: ${(p) => (p.$selected ? "#94A6BE" : "#EAEEF6")};
+    background: ${({ disabled, $selected }) =>
+      disabled || $selected ? undefined : "#e1e7f2"};
   }
 `;
 
-const CalendarFooter = styled.p`
+const SelectedInfo = styled.p`
+  margin: 0;
+  margin-top: 4px;
   color: #94a6be;
   font-size: 12px;
 `;
 
-const ButtonsRow = styled.div`
+
+const Footer = styled.div`
+  margin-top: 26px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 24px;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 `;
 
-const LeftGroup = styled.div`
+const FooterLeft = styled.div`
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 `;
 
-const Button = styled.button`
-  height: 36px;
-  padding: 0 18px;
-  border-radius: 4px;
-  border: ${(p) =>
-    p.$type === "outline" ? "1px solid #565EEF" : "none"};
-  background: ${(p) =>
-    p.$type === "filled" ? "#565EEF" : "transparent"};
-  color: ${(p) =>
-    p.$type === "filled" ? "#fff" : "#565EEF"};
+const FooterRight = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const FooterButton = styled.button`
+  min-width: 120px;
+  padding: 9px 16px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: 0.2s ease;
+  border: ${({ $variant }) =>
+    $variant === "primary"
+      ? "none"
+      : $variant === "danger"
+      ? "1px solid #ff5c5c"
+      : "1px solid rgba(148, 166, 190, 0.7)"};
+  background: ${({ $variant }) =>
+    $variant === "primary"
+      ? "#565EEF"
+      : $variant === "danger"
+      ? "#ffffff"
+      : "#ffffff"};
+  color: ${({ $variant }) =>
+    $variant === "primary"
+      ? "#ffffff"
+      : $variant === "danger"
+      ? "#ff5c5c"
+      : "#565eef"};
+
   &:hover {
-    opacity: 0.9;
+    background: ${({ $variant }) =>
+      $variant === "primary" ? "#474fd8" : "#f4f6fa"};
   }
 `;
 
+
+const STATUSES = [
+  "Без статуса",
+  "Нужно сделать",
+  "В работе",
+  "Тестирование",
+  "Готово",
+];
+
+
 function getMonthMatrix(year, month) {
-  const firstDay = new Date(year, month, 1);
-  const start = new Date(firstDay);
-  start.setDate(firstDay.getDate() - ((firstDay.getDay() + 6) % 7));
+  const first = new Date(year, month, 1);
+  const start = new Date(first);
+  start.setDate(first.getDate() - ((first.getDay() + 6) % 7)); 
+
   return Array.from({ length: 42 }, (_, i) => {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
@@ -210,126 +273,190 @@ function getMonthMatrix(year, month) {
   });
 }
 
+
+const formatDate = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+
+
+function parseTaskDate(value) {
+  if (!value) return new Date();
+
+  if (typeof value === "string") {
+    const [datePart] = value.split("T"); 
+    const [y, m, d] = datePart.split("-");
+    const yy = Number(y),
+      mm = Number(m),
+      dd = Number(d);
+    if (!isNaN(yy) && !isNaN(mm) && !isNaN(dd)) {
+      
+      return new Date(yy, mm - 1, dd);
+    }
+  }
+
+  const parsed = new Date(value);
+  return isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
+const MONTH_FORMAT = new Intl.DateTimeFormat("ru-RU", {
+  month: "long",
+  year: "numeric",
+});
+
+
 export default function TaskModal({ task, token, onClose, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(task.title);
   const [status, setStatus] = useState(task.status);
   const [description, setDescription] = useState(task.description || "");
-  const initial = task.date ? new Date(task.date) : new Date();
+
+  
+  const safeDate = parseTaskDate(task.date);
+
+  const [selected, setSelected] = useState(safeDate);
   const [currentYM, setCurrentYM] = useState({
-    y: initial.getFullYear(),
-    m: initial.getMonth(),
+    y: safeDate.getFullYear(),
+    m: safeDate.getMonth(),
   });
-  const [selected, setSelected] = useState(initial);
 
-  const days = useMemo(() => getMonthMatrix(currentYM.y, currentYM.m), [currentYM]);
-
-  // === Сохранение ===
-  const handleSave = async () => {
-    try {
-      const updated = await updateTask(token, task.id || task._id, {
-        title: task.title,
-        description,
-        status,
-        topic: task.topic,
-        date: selected.toISOString().split("T")[0],
-      });
-
-      const updatedTask = Array.isArray(updated) ? updated[0] : updated;
-      if (onUpdate) onUpdate(updatedTask);
-
-      setIsEditing(false);
-      onClose(); 
-    } catch (error) {
-      console.error("Ошибка при сохранении:", error);
-      alert("Ошибка при сохранении: " + error.message);
-    }
-  };
-
-  // === Удаление ===
-  const handleDelete = async () => {
-    if (!window.confirm("Удалить задачу?")) return;
-    await deleteTask(token, task.id || task._id);
-    if (onDelete) onDelete(task.id || task._id);
-    onClose();
-  };
+  const days = useMemo(
+    () => getMonthMatrix(currentYM.y, currentYM.m),
+    [currentYM]
+  );
 
   const isSameDay = (a, b) =>
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
 
+  // ===== Сохранение =====
+  const handleSave = async () => {
+    if (!title.trim()) {
+      alert("Название задачи не может быть пустым");
+      return;
+    }
+
+    const body = {
+      title,
+      description,
+      status,
+      topic: task.topic,
+      
+      date: formatDate(selected),
+    };
+
+    try {
+      const updated = await updateTask(task._id || task.id, body, token);
+      if (onUpdate) onUpdate(updated);
+      setIsEditing(false);
+      onClose();
+    } catch (e) {
+      alert("Ошибка при сохранении: " + e.message);
+    }
+  };
+
+  
+  const handleDelete = async () => {
+    if (!window.confirm("Удалить задачу?")) return;
+
+    try {
+      await deleteTask(task._id || task.id, token);
+      if (onDelete) onDelete(task._id || task.id);
+      onClose();
+    } catch (e) {
+      alert("Ошибка при удалении: " + e.message);
+    }
+  };
+
+  const goPrevMonth = () => {
+    if (!isEditing) return;
+    setCurrentYM((p) => ({
+      y: p.m === 0 ? p.y - 1 : p.y,
+      m: (p.m + 11) % 12,
+    }));
+  };
+
+  const goNextMonth = () => {
+    if (!isEditing) return;
+    setCurrentYM((p) => ({
+      y: p.m === 11 ? p.y + 1 : p.y,
+      m: (p.m + 1) % 12,
+    }));
+  };
+
+  const handleSelectDay = (d) => {
+    if (!isEditing) return;
+    setSelected(d);
+  };
+
   return (
     <Overlay>
       <Modal>
+        {/* HEADER */}
         <Header>
-          <Title>{task.title}</Title>
-          <Tag $topic={task.topic}>{task.topic || "Web Design"}</Tag>
+          <TitleInput
+            disabled={!isEditing}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <Tag $topic={task.topic}>{task.topic}</Tag>
         </Header>
 
+        {/* CONTENT */}
         <Layout>
+          {/* LEFT COLUMN */}
           <div>
             <Label>Статус</Label>
             <StatusList>
-              {["Без статуса", "Нужно сделать", "В работе", "Тестирование", "Готово"].map(
-                (s) => (
-                  <StatusButton
-                    key={s}
-                    $active={s === status}
-                    onClick={() => isEditing && setStatus(s)}
-                    $disabled={!isEditing}
-                  >
-                    {s}
-                  </StatusButton>
-                )
-              )}
+              {STATUSES.map((s) => (
+                <StatusButton
+                  key={s}
+                  $active={s === status}
+                  $disabled={!isEditing}
+                  onClick={() => isEditing && setStatus(s)}
+                >
+                  {s}
+                </StatusButton>
+              ))}
             </StatusList>
 
             <Label>Описание задачи</Label>
             <Textarea
-              placeholder="Введите описание задачи..."
+              disabled={!isEditing}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              disabled={!isEditing}
+              placeholder="Введите описание задачи..."
             />
           </div>
 
-          {/* Календарь */}
+          {/* RIGHT COLUMN — CALENDAR */}
           <CalendarWrap>
-            <Label>Даты</Label>
+            <Label>Дата</Label>
+
             <CalendarHeader>
-              {new Intl.DateTimeFormat("ru-RU", {
-                month: "long",
-                year: "numeric",
-              }).format(new Date(currentYM.y, currentYM.m, 1))}
-              <div style={{ display: "flex", gap: 6 }}>
-                <NavButton
-                  onClick={() =>
-                    setCurrentYM((p) => ({
-                      y: p.m === 0 ? p.y - 1 : p.y,
-                      m: (p.m + 11) % 12,
-                    }))
-                  }
-                >
-                  ‹
-                </NavButton>
-                <NavButton
-                  onClick={() =>
-                    setCurrentYM((p) => ({
-                      y: p.m === 11 ? p.y + 1 : p.y,
-                      m: (p.m + 1) % 12,
-                    }))
-                  }
-                >
-                  ›
-                </NavButton>
-              </div>
+              <CalendarNavBtn disabled={!isEditing} onClick={goPrevMonth}>
+                <svg viewBox="0 0 20 20">
+                  <path d="M12 15L7 10L12 5" stroke="#94A6BE" strokeWidth="2" />
+                </svg>
+              </CalendarNavBtn>
+
+              <CalendarMonth>
+                {MONTH_FORMAT.format(new Date(currentYM.y, currentYM.m, 1))}
+              </CalendarMonth>
+
+              <CalendarNavBtn disabled={!isEditing} onClick={goNextMonth}>
+                <svg viewBox="0 0 20 20">
+                  <path d="M8 5L13 10L8 15" stroke="#94A6BE" strokeWidth="2" />
+                </svg>
+              </CalendarNavBtn>
             </CalendarHeader>
 
-            <Weekdays>
+            <WeekDaysRow>
               {["пн", "вт", "ср", "чт", "пт", "сб", "вс"].map((d) => (
                 <Weekday key={d}>{d}</Weekday>
               ))}
-            </Weekdays>
+            </WeekDaysRow>
 
             <DaysGrid>
               {days.map((d, i) => (
@@ -338,54 +465,67 @@ export default function TaskModal({ task, token, onClose, onUpdate, onDelete }) 
                   $muted={d.getMonth() !== currentYM.m}
                   $selected={isSameDay(d, selected)}
                   disabled={!isEditing}
-                  onClick={() => isEditing && setSelected(d)}
+                  onClick={() => handleSelectDay(d)}
                 >
                   {d.getDate()}
                 </DayCell>
               ))}
             </DaysGrid>
 
-            <CalendarFooter>
-              Срок исполнения:{" "}
-              {selected.toLocaleDateString("ru-RU", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "2-digit",
-              })}
-            </CalendarFooter>
+            <SelectedInfo>Выбрано: {formatDate(selected)}</SelectedInfo>
           </CalendarWrap>
         </Layout>
 
-        <ButtonsRow>
-          <LeftGroup>
+        {/* FOOTER */}
+        <Footer>
+          <FooterLeft>
             {!isEditing ? (
               <>
-                <Button $type="outline" onClick={() => setIsEditing(true)}>
+                <FooterButton
+                  $variant="secondary"
+                  onClick={() => setIsEditing(true)}
+                >
                   Редактировать задачу
-                </Button>
-                <Button $type="outline" onClick={handleDelete}>
+                </FooterButton>
+                <FooterButton $variant="danger" onClick={handleDelete}>
                   Удалить задачу
-                </Button>
+                </FooterButton>
               </>
             ) : (
               <>
-                <Button $type="filled" onClick={handleSave}>
+                <FooterButton $variant="primary" onClick={handleSave}>
                   Сохранить
-                </Button>
-                <Button $type="outline" onClick={() => setIsEditing(false)}>
+                </FooterButton>
+                <FooterButton
+                  $variant="secondary"
+                  onClick={() => {
+                    setTitle(task.title);
+                    setStatus(task.status);
+                    setDescription(task.description || "");
+                    const resetDate = parseTaskDate(task.date);
+                    setSelected(resetDate);
+                    setCurrentYM({
+                      y: resetDate.getFullYear(),
+                      m: resetDate.getMonth(),
+                    });
+                    setIsEditing(false);
+                  }}
+                >
                   Отменить
-                </Button>
-                <Button $type="outline" onClick={handleDelete}>
+                </FooterButton>
+                <FooterButton $variant="danger" onClick={handleDelete}>
                   Удалить задачу
-                </Button>
+                </FooterButton>
               </>
             )}
-          </LeftGroup>
+          </FooterLeft>
 
-          <Button $type="filled" onClick={onClose}>
-            Закрыть
-          </Button>
-        </ButtonsRow>
+          <FooterRight>
+            <FooterButton $variant="secondary" onClick={onClose}>
+              Закрыть
+            </FooterButton>
+          </FooterRight>
+        </Footer>
       </Modal>
     </Overlay>
   );

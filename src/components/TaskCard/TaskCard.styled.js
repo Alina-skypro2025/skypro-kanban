@@ -65,7 +65,12 @@ export const Title = styled.h4`
   line-height: 18px;
   color: #000;
   margin: 0 0 10px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
+
 
 export const DateRow = styled.div`
   display: flex;

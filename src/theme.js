@@ -1,4 +1,4 @@
-// src/theme.js
+
 export const theme = {
   colors: {
     primary: '#565EEF',
@@ -12,7 +12,7 @@ export const theme = {
     white: '#FFFFFF',
     black: '#000000',
 
-    // Цвета категорий
+    
     orange: {
       bg: 'rgba(255, 109, 0, 0.1)',
       text: '#FF6D00',
@@ -30,7 +30,7 @@ export const theme = {
       text: '#94A6BE',
     },
 
-    // Hover эффекты
+   
     hover01: '#33399b',
     hover02: '#5a6268',
     hover03: '#5a6268',

@@ -1,83 +1,69 @@
-// src/services/tasks.js
 const BASE_URL = "https://wedev-api.sky.pro/api/kanban";
 
-// ===== Получение всех задач =====
+
 export async function getTasks(token) {
   const response = await fetch(BASE_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   });
 
+  const data = await response.json().catch(() => ({}));
+
   if (response.status === 401) {
-    throw new Error("Сессия истекла. Войдите заново.");
+    throw new Error("401");
   }
 
   if (!response.ok) {
-    throw new Error("Ошибка загрузки задач");
+    throw new Error(data.message || "Ошибка загрузки задач");
   }
 
-  const data = await response.json();
   return data.tasks || [];
 }
 
-// ===== Создание новой задачи =====
-export async function createTask(token, taskData) {
+
+export async function createTask(task, token) {
   const response = await fetch(BASE_URL, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(taskData),
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(task),
   });
 
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data.message || "Ошибка создания задачи");
+    throw new Error(data.message || "Ошибка создания");
   }
 
-  return data.task || data.tasks || [];
+  return data.task;
 }
 
-// ===== Обновление задачи =====
-export async function updateTask(token, taskId, updatedData) {
-  if (!taskId) throw new Error("ID задачи не указан");
 
-  const response = await fetch(`${BASE_URL}/${taskId}`, {
+export async function updateTask(id, task, token) {
+  const response = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(updatedData),
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(task),
   });
 
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data.message || "Ошибка обновления задачи");
+    throw new Error(data.message || "Ошибка обновления");
   }
 
-  // ❗ Убираем всплывающее уведомление и возвращаем саму задачу
-  return data.task || data.tasks || updatedData;
+  return data.task;
 }
 
-// ===== Удаление задачи =====
-export async function deleteTask(token, taskId) {
-  if (!taskId) throw new Error("ID задачи не указан");
 
-  const response = await fetch(`${BASE_URL}/${taskId}`, {
+export async function deleteTask(id, token) {
+  const response = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
   });
 
   if (!response.ok) {
-    const data = await response.json();
-    throw new Error(data.message || "Ошибка удаления задачи");
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.message || "Ошибка удаления");
   }
 
-  // ❗ Тихое удаление, без toast
   return true;
 }

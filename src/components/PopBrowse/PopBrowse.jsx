@@ -1,4 +1,4 @@
-// src/components/PopBrowse/PopBrowse.jsx
+
 import {
   StyledPopBrowse,
   StyledPopBrowseContainer,

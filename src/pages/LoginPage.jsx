@@ -33,7 +33,6 @@ const Input = styled.input`
   border:1px solid rgba(16,24,40,0.06);
   background:#f6f8fb;
   outline:none;
-  &:focus { border-color:#6b64f6; }
 `;
 
 const Submit = styled.button`
@@ -76,6 +75,7 @@ export default function LoginPage() {
               required
             />
           </Field>
+
           <Field>
             <label>Пароль</label>
             <Input
@@ -85,10 +85,13 @@ export default function LoginPage() {
               required
             />
           </Field>
-          {error && <p style={{ color: "red", marginBottom: 12 }}>{error}</p>}
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
           <Submit type="submit">Войти</Submit>
         </form>
-        <p style={{marginTop:12,textAlign:"center"}}>
+
+        <p style={{marginTop:12, textAlign:"center"}}>
           Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
         </p>
       </Card>
