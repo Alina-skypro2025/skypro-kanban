@@ -1,9 +1,12 @@
 import React, { createContext, useContext, useState } from "react";
 import { loginUser, registerUser } from "../services/auth";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem("token"));
   const [user, setUser] = useState(
     localStorage.getItem("user")
@@ -12,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   );
   const [error, setError] = useState(null);
 
-  
+
   const login = async (email, password) => {
     try {
       setError(null);
@@ -25,6 +28,8 @@ export const AuthProvider = ({ children }) => {
 
       setUser(user);
       setIsAuth(true);
+
+      navigate("/"); 
     } catch (err) {
       setError(err.message);
     }
@@ -43,6 +48,8 @@ export const AuthProvider = ({ children }) => {
 
       setUser(user);
       setIsAuth(true);
+
+      navigate("/"); 
     } catch (err) {
       setError(err.message);
     }
@@ -52,8 +59,11 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+
     setIsAuth(false);
     setUser(null);
+
+    navigate("/login"); 
   };
 
   return (
